@@ -1,0 +1,9 @@
+{% extends 'complaints/base.html' %}
+{% block content %}
+<h3>Submit a Complaint</h3>
+<form method="post" enctype="multipart/form-data" class="col-md-6">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-info">Submit Complaint</button>
+</form>
+{% endblock %}

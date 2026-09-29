@@ -1,0 +1,15 @@
+{% extends 'complaints/base.html' %}
+{% block content %}
+<h3>{{ complaint.complaint_id }} — {{ complaint.title }}</h3>
+<p><strong>Category:</strong> {{ complaint.category }}</p>
+<p><strong>Location:</strong> {{ complaint.location }}</p>
+<p><strong>Description:</strong> {{ complaint.description }}</p>
+<p><strong>Status:</strong> {{ complaint.get_status_display }}</p>
+{% if complaint.photo %}
+  <p><strong>Photo:</strong><br><img src="{{ complaint.photo.url }}" width="300"></p>
+{% endif %}
+{% if complaint.resolution_photo %}
+  <p><strong>Resolution proof:</strong><br><img src="{{ complaint.resolution_photo.url }}" width="300"></p>
+{% endif %}
+<a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back</a>
+{% endblock %}

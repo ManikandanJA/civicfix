@@ -1,0 +1,10 @@
+{% extends 'complaints/base.html' %}
+{% block content %}
+<h3>Update Status — {{ complaint.complaint_id }}</h3>
+<p>{{ complaint.title }} ({{ complaint.user.username }})</p>
+<form method="post" enctype="multipart/form-data" class="col-md-6">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-warning">Update</button>
+</form>
+{% endblock %}

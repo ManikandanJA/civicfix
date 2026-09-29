@@ -1,0 +1,18 @@
+{% extends 'complaints/base.html' %}
+{% block content %}
+<h3>Delete complaint?</h3>
+<p>Are you sure you want to delete <strong>{{ complaint.complaint_id }} — {{ complaint.title }}</strong>?</p>
+{% if is_admin_delete %}
+  <p class="text-warning">This is an admin delete — use this for spam or duplicate reports.</p>
+{% endif %}
+<p class="text-danger">This action cannot be undone.</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Yes, delete</button>
+  {% if is_admin_delete %}
+    <a href="{% url 'admin_complaint_list' %}" class="btn btn-outline-secondary">Cancel</a>
+  {% else %}
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+  {% endif %}
+</form>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'complaints/base.html' %}
+{% block content %}
+<h3>Admin Panel — All Complaints</h3>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <select name="category" class="form-select">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.id }}">{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <select name="status" class="form-select">
+      <option value="">All Status</option>
+      {% for key, label in status_choices %}
+        <option value="{{ key }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-info">Filter</button>
+  </div>
+</form>
+
+<table class="table table-dark table-striped">
+  <thead>
+    <tr><th>ID</th><th>Title</th><th>User</th><th>Category</th><th>Status</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for c in complaints %}
+    <tr>
+      <td>{{ c.complaint_id }}</td>
+      <td>{{ c.title }}</td>
+      <td>{{ c.user.username }}</td>
+      <td>{{ c.category }}</td>
+      <td>{{ c.get_status_display }}</td>
+      <td>
+        <a href="{% url 'update_status' c.complaint_id %}" class="btn btn-sm btn-outline-warning">Update</a>
+        <a href="{% url 'admin_delete_complaint' c.complaint_id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No complaints found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

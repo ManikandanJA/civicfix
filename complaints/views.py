@@ -49,8 +49,29 @@ def submit_complaint(request):
 
 @login_required
 def complaint_detail(request, complaint_id):
-    complaint = get_object_or_404(Complaint, complaint_id=complaint_id)
-    return render(request, 'complaints/complaint_detail.html', {'complaint': complaint})
+    complaint = get_object_or_404(
+        Complaint,
+        complaint_id=complaint_id
+    )
+
+    # Admin can view any complaint
+    if request.user.is_staff:
+        return render(
+            request,
+            'complaints/complaint_detail.html',
+            {'complaint': complaint}
+        )
+
+    # Customer can view only their own complaint
+    if complaint.user != request.user:
+        messages.error(request, "You are not allowed to view this complaint.")
+        return redirect('dashboard')
+
+    return render(
+        request,
+        'complaints/complaint_detail.html',
+        {'complaint': complaint}
+    )
 
 
 @login_required

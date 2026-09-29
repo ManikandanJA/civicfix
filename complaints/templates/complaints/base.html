@@ -14,11 +14,19 @@
         <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">🛠 CivicFix</a>
         <div>
             {% if user.is_authenticated %}
-                {% if user.is_staff %}
-                    <a href="{% url 'admin_complaint_list' %}" class="btn btn-outline-warning btn-sm me-2">Admin Panel</a>
-                {% endif %}
-                <a href="{% url 'submit_complaint' %}" class="btn btn-outline-info btn-sm me-2">New Complaint</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-sm">Logout ({{ user.username }})</a>
+    {% if user.is_staff %}
+        <a href="{% url 'admin_complaint_list' %}" class="btn btn-outline-warning btn-sm me-2">Admin Panel</a>
+    {% endif %}
+
+    <a href="{% url 'submit_complaint' %}" class="btn btn-outline-info btn-sm me-2">New Complaint</a>
+
+    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-secondary btn-sm">
+            Logout ({{ user.username }})
+        </button>
+    </form>
+{% else %}
             {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-info btn-sm me-2">Login</a>
                 <a href="{% url 'signup' %}" class="btn btn-outline-secondary btn-sm">Sign Up</a>

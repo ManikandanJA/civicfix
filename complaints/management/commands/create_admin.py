@@ -5,14 +5,26 @@ from django.contrib.auth import get_user_model
 
 
 class Command(BaseCommand):
-    help = "Create CivicFix admin user"
+    help = "Create or update CivicFix admin user"
 
     def handle(self, *args, **kwargs):
         User = get_user_model()
 
-        username = os.environ.get("ADMIN_USERNAME", "civicfixadmin")
-        email = os.environ.get("ADMIN_EMAIL", "civicfixadmin@gmail.com")
+        username = os.environ.get("ADMIN_USERNAME")
+        email = os.environ.get("ADMIN_EMAIL")
         password = os.environ.get("ADMIN_PASSWORD")
+
+        if not username:
+            self.stdout.write(
+                self.style.ERROR("ADMIN_USERNAME environment variable is not set")
+            )
+            return
+
+        if not email:
+            self.stdout.write(
+                self.style.ERROR("ADMIN_EMAIL environment variable is not set")
+            )
+            return
 
         if not password:
             self.stdout.write(
@@ -20,16 +32,32 @@ class Command(BaseCommand):
             )
             return
 
-        if User.objects.filter(username=username).exists():
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                "email": email,
+                "is_staff": True,
+                "is_superuser": True,
+                "is_active": True,
+            }
+        )
+
+        user.email = email
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+        user.set_password(password)
+        user.save()
+
+        if created:
             self.stdout.write(
-                self.style.WARNING("Admin user already exists")
+                self.style.SUCCESS(
+                    f"Admin user '{username}' created successfully."
+                )
             )
         else:
-            User.objects.create_superuser(
-                username=username,
-                email=email,
-                password=password
-            )
             self.stdout.write(
-                self.style.SUCCESS("Admin user created successfully")
+                self.style.SUCCESS(
+                    f"Admin user '{username}' updated successfully."
+                )
             )
